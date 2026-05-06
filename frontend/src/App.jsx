@@ -20,7 +20,7 @@ import {
 import logo from './assets/logo.png';
 import './index.css';
 
-const API_BASE_URL = 'http://localhost:8001';
+const API_BASE_URL = 'https://task-management-tp39.onrender.com';
 const WA_BASE_URL = 'http://localhost:3001';
 const PROGRAM_ORDER = ['HO HYDREABAD', 'Youth', 'PwD', 'Mitra/ACE', 'KARV'];
 const RAISED_BY_COL = "Emp Id";
