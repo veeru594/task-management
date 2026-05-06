@@ -99,7 +99,7 @@ def get_dashboard():
                 if row["dashboard_member"] not in VALID_MEMBERS:
                     continue
                 if row["last_updated"]:
-                    row["last_updated"] = row["last_updated"].isoformat()
+                    row["last_updated"] = row["last_updated"].isoformat() + "Z"
                 row["program"] = MEMBER_TO_PROGRAM.get(row["dashboard_member"], "Other")
                 result.append(row)
             return result
