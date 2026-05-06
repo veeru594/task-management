@@ -43,7 +43,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:4173", "https://task-management-tp39.onrender.com"],
+    allow_origins=["http://localhost:5173", "http://localhost:4173", "https://task-management-tp39.onrender.com", "https://task-management-1-7eij.onrender.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
