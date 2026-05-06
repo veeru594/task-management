@@ -21,15 +21,14 @@ import logo from './assets/logo.png';
 import './index.css';
 
 const API_BASE_URL = 'http://localhost:8001';
-const PROGRAM_ORDER = ['HO HYD', 'Youth', 'PwD', 'Mitra/ACE', 'KARV'];
 const WA_BASE_URL = 'http://localhost:3001';
+const PROGRAM_ORDER = ['HO HYDREABAD', 'Youth', 'PwD', 'Mitra/ACE', 'KARV'];
 const RAISED_BY_COL = "Emp Id";
 const ATTENDANCE_COL = "Request Type";
 const LEAVE_COL = "Leave Type";
 const ADMIN_USER = "admin";
 const ADMIN_PASS = "drf@2026";
 
-// Business hours: 8am–10pm. Warn if schedule falls outside.
 const isBusinessHour = (date) => {
   const h = date.getHours();
   return h >= 8 && h < 22;
@@ -59,7 +58,6 @@ function App() {
   });
   const [phoneForm, setPhoneForm] = useState({ member: '', phone: '' });
 
-  // WhatsApp send modal
   const [showWAModal, setShowWAModal] = useState(false);
   const [waStatus, setWaStatus] = useState(null);
   const [selectedMembers, setSelectedMembers] = useState(new Set());
@@ -67,7 +65,6 @@ function App() {
   const [scheduleTime, setScheduleTime] = useState('');
   const [sendingWA, setSendingWA] = useState(false);
 
-  // Scheduled jobs modal
   const [showSchedules, setShowSchedules] = useState(false);
   const [scheduledJobs, setScheduledJobs] = useState([]);
 
@@ -248,8 +245,6 @@ function App() {
     localStorage.setItem('drf_phonebook', JSON.stringify(updated));
   };
 
-  // --- WhatsApp Modal ---
-
   const openWAModal = async () => {
     let status = { ready: false };
     try {
@@ -257,7 +252,6 @@ function App() {
       status = res.data;
     } catch {}
     setWaStatus(status);
-
     const withPhones = new Set(
       data.filter(item => phoneBook[item.dashboard_member]).map(item => item.dashboard_member)
     );
@@ -344,8 +338,6 @@ function App() {
       setMessage({ type: 'error', text: 'Failed to cancel job' });
     }
   };
-
-  // ---
 
   const statusColors = (count) => {
     if (count === 0) return { status: 'status-green', text: 'text-green' };
@@ -505,7 +497,6 @@ function App() {
               <X className="cursor-pointer" onClick={() => setShowWAModal(false)} />
             </div>
 
-            {/* Connection status */}
             <div className={`wa-status-bar ${waStatus?.ready ? 'connected' : 'disconnected'}`}>
               {waStatus?.ready
                 ? <><span className="wa-dot connected" />Connected</>
@@ -513,7 +504,6 @@ function App() {
               }
             </div>
 
-            {/* Recipient selection */}
             <div className="wa-section-label">
               Recipients
               <div className="wa-select-controls">
@@ -543,7 +533,6 @@ function App() {
               ))}
             </div>
 
-            {/* Send mode toggle */}
             <div className="wa-mode-toggle">
               <label className={waMode === 'now' ? 'active' : ''}>
                 <input type="radio" value="now" checked={waMode === 'now'} onChange={() => setWaMode('now')} />
@@ -629,7 +618,6 @@ function App() {
             <img src={logo} alt="DRF" className="brand-logo" />
             <div className="brand-info">
               <h1>PENDING TASKS DASHBOARD - DARWIN BOX</h1>
-              
             </div>
           </div>
           <div className="header-right">
@@ -720,10 +708,10 @@ function App() {
 
             return (
               <div className="sections-container">
-                {renderSection('HO HYD')}
+                {renderSection('HO HYDREABAD')}
                 {renderSection('Youth')}
-                {renderSection('Mitra/ACE')}
                 {renderSection('PwD')}
+                {renderSection('Mitra/ACE')}
                 {renderSection('KARV')}
               </div>
             );

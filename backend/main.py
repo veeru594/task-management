@@ -1,68 +1,31 @@
 import os
 import datetime
-import pymysql
-import pymysql.cursors
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from contextlib import asynccontextmanager
+from apscheduler.schedulers.background import BackgroundScheduler
 from dashboard_sets import DASHBOARD_MEMBERS, DASHBOARD_PROGRAMS
-from dotenv import load_dotenv
-
-load_dotenv()
-
-# --- DATABASE CONNECTION ---
-def get_db_connection():
-    return pymysql.connect(
-        host=os.getenv("DB_HOST", "localhost"),
-        port=int(os.getenv("DB_PORT", "3306")),
-        user=os.getenv("DB_USER", "root"),
-        password=os.getenv("DB_PASSWORD", ""),
-        database=os.getenv("DB_NAME", "hr_dashboard"),
-        cursorclass=pymysql.cursors.DictCursor,
-        autocommit=False
-    )
+from db import get_db_connection
+from email_poller import poll_emails
 
 def init_db():
     conn = get_db_connection()
     try:
         with conn.cursor() as cur:
-            # Run schema.sql
             schema_path = os.path.join(os.path.dirname(__file__), "schema.sql")
             if os.path.exists(schema_path):
                 with open(schema_path, "r") as f:
-                    # MySQL can't execute multiple statements at once easily unless enabled
-                    # So we split by semicolon
-                    sql_commands = f.read().split(';')
-                    for command in sql_commands:
+                    for command in f.read().split(';'):
                         if command.strip():
                             cur.execute(command)
-            
-            # Fix legacy double-space name: merge into the correct single-space entry if both exist
-            cur.execute("SELECT COUNT(*) AS cnt FROM dashboard_counts WHERE dashboard_member = 'Paladi Rajani  Kanth'")
-            if cur.fetchone()["cnt"]:
-                cur.execute("SELECT COUNT(*) AS cnt FROM dashboard_counts WHERE dashboard_member = 'Paladi Rajani Kanth'")
-                if cur.fetchone()["cnt"]:
-                    cur.execute("""
-                        UPDATE dashboard_counts dc1
-                        JOIN dashboard_counts dc2 ON dc2.dashboard_member = 'Paladi Rajani  Kanth'
-                        SET dc1.pending_count = dc1.pending_count + dc2.pending_count
-                        WHERE dc1.dashboard_member = 'Paladi Rajani Kanth'
-                    """)
-                    cur.execute("DELETE FROM dashboard_counts WHERE dashboard_member = 'Paladi Rajani  Kanth'")
-                else:
-                    cur.execute("""
-                        UPDATE dashboard_counts SET dashboard_member = 'Paladi Rajani Kanth'
-                        WHERE dashboard_member = 'Paladi Rajani  Kanth'
-                    """)
 
-            # Initialize dashboard_counts with all members from DASHBOARD_MEMBERS
             for member in DASHBOARD_MEMBERS.keys():
                 cur.execute("""
                     INSERT IGNORE INTO dashboard_counts (dashboard_member, pending_count, last_updated)
                     VALUES (%s, 0, NULL)
                 """, (member,))
-            
+
         conn.commit()
     finally:
         conn.close()
@@ -70,13 +33,17 @@ def init_db():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(poll_emails, "interval", minutes=30)
+    scheduler.start()
     yield
+    scheduler.shutdown()
 
 app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:4173"],
+    allow_origins=["http://localhost:5173", "http://localhost:4173", "https://task-management-tp39.onrender.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

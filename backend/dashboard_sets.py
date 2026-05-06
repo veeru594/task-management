@@ -10158,7 +10158,7 @@ DASHBOARD_PROGRAMS = {
         "Raghavender Rao C",
         "S Jakir",
     ],
-    "HO HYD": [
+    "HO HYDREABAD": [
         "Bhaskar Babu B",
         "Kalyani Rao",
         "P V Srinivas",
