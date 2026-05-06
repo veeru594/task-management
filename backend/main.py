@@ -36,6 +36,7 @@ async def lifespan(app: FastAPI):
     scheduler = BackgroundScheduler()
     scheduler.add_job(poll_emails, "interval", minutes=30)
     scheduler.start()
+    print("[Scheduler] Email poller started — runs every 30 minutes")
     yield
     scheduler.shutdown()
 
