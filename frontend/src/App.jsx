@@ -100,7 +100,11 @@ function App() {
     }
   };
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(fetchData, 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   const totalTasks = data.reduce((acc, curr) => acc + curr.pending_count, 0);
   const lastUpdateRaw = data.reduce((latest, item) => {
@@ -621,7 +625,12 @@ function App() {
             </div>
           </div>
           <div className="header-right">
-            <div className="refreshed-at">Refreshed: {formatDate(lastUpdateRaw)}</div>
+            <div className="refreshed-at">
+              Refreshed: {formatDate(lastUpdateRaw)}
+              <button className="refresh-btn" onClick={fetchData} disabled={loading} title="Refresh now">
+                <RotateCcw size={12} className={loading ? 'spin' : ''} />
+              </button>
+            </div>
             <div className="auth-actions">
               {isLoggedIn ? (
                 <>
