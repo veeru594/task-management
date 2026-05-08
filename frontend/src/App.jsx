@@ -22,7 +22,7 @@ import './index.css';
 
 const API_BASE_URL = 'https://task-management-tp39.onrender.com';
 const WA_BASE_URL = 'http://localhost:3001';
-const PROGRAM_ORDER = ['HO HYDREABAD', 'Youth', 'PwD', 'Mitra/ACE', 'KARV'];
+const PROGRAM_ORDER = ['HO HYDREABAD', 'Youth', 'PwD', 'Mitra/ACE', 'KARV/KARVJC'];
 const RAISED_BY_COL = "Emp Id";
 const ATTENDANCE_COL = "Request Type";
 const LEAVE_COL = "Leave Type";
@@ -654,7 +654,7 @@ function App() {
       <div className="dashboard-container">
         <div className="summary-banner">
           <div className="summary-total-row">
-            <span className="summary-total-label">Total Pending Tasks(Attendence and leave Requests)</span>
+            <span className="summary-total-label">Total Pending Tasks (Attendence & leave Requests)</span>
             <span className="summary-total-value">{loading ? '...' : totalTasks}</span>
             <div className="summary-divider" />
           </div>
@@ -722,7 +722,7 @@ function App() {
                 {renderSection('Youth')}
                 {renderSection('PwD')}
                 {renderSection('Mitra/ACE')}
-                {renderSection('KARV')}
+                {renderSection('KARV/KARVJC')}
               </div>
             );
           })()
