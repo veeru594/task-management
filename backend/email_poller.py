@@ -109,7 +109,13 @@ def reset_and_upload(counts, breakdown):
 
 def poll_emails():
     print(f"[{datetime.now()}] Checking emails...")
+    try:
+        _do_poll()
+    except Exception as e:
+        print(f"[{datetime.now()}] ERROR in email poller: {e}")
 
+
+def _do_poll():
     mail = imaplib.IMAP4_SSL("imap.gmail.com")
     mail.login(GMAIL_USER, GMAIL_APP_PASSWORD)
     mail.select("inbox")
