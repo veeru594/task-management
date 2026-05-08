@@ -34,9 +34,9 @@ def init_db():
 async def lifespan(app: FastAPI):
     init_db()
     scheduler = BackgroundScheduler()
-    scheduler.add_job(poll_emails, "interval", minutes=30)
+    scheduler.add_job(poll_emails, "interval", minutes=2)
     scheduler.start()
-    print("[Scheduler] Email poller started — runs every 30 minutes")
+    print("[Scheduler] Email poller started — runs every 2 minutes")
     yield
     scheduler.shutdown()
 
@@ -154,7 +154,7 @@ def upload_counts(data: UploadCounts):
                         detail="This file has already been uploaded"
                     )
             
-            now = datetime.datetime.now()
+            now = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
             
             # Update dashboard_counts
             for member_name, count in data.counts.items():
@@ -205,6 +205,14 @@ def upload_counts(data: UploadCounts):
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         conn.close()
+
+@app.post("/trigger-poll")
+def trigger_poll():
+    try:
+        poll_emails()
+        return {"message": "Poll completed successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     import uvicorn

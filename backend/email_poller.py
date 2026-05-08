@@ -3,7 +3,7 @@ import email
 import os
 import pandas as pd
 from io import BytesIO
-from datetime import datetime
+from datetime import datetime, timezone
 from dotenv import load_dotenv
 from dashboard_sets import DASHBOARD_MEMBERS
 from db import get_db_connection
@@ -80,7 +80,7 @@ def reset_and_upload(counts, breakdown):
             cursor.execute("DELETE FROM pending_breakdown")
             cursor.execute("DELETE FROM uploaded_files")
 
-            now = datetime.now()
+            now = datetime.now(timezone.utc).replace(tzinfo=None)
 
             for member, count in counts.items():
                 cursor.execute("""

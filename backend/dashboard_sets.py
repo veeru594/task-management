@@ -10181,7 +10181,7 @@ DASHBOARD_PROGRAMS = {
         "Paladi Rajani Kanth",
         "S Suman",
     ],
-    "KARV": [
+    "KARV/KARVJC": [
         "Eleshwaram Ganesh",
         "K Vijayalaxmi",
     ],
