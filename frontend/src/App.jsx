@@ -654,7 +654,7 @@ function App() {
       <div className="dashboard-container">
         <div className="summary-banner">
           <div className="summary-total-row">
-            <span className="summary-total-label">Total Pending Tasks (Attendence & leave Requests)</span>
+            <span className="summary-total-label">Total Pending Tasks (Attendence & leave Approvals)</span>
             <span className="summary-total-value">{loading ? '...' : totalTasks}</span>
             <div className="summary-divider" />
           </div>
